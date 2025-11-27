@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
@@ -44,8 +44,8 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// Create unique index on email
-userSchema.index({ email: 1 }, { unique: true });
+// Note: Email unique index is already defined in schema above (unique: true)
+// No need for duplicate index definition
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
@@ -58,7 +58,7 @@ userSchema.pre('save', async function (next) {
   }
   
   try {
-    console.log('   - Hashing password with bcrypt (salt rounds: 10)');
+    console.log('   - Hashing password with bcryptjs (salt rounds: 10)');
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     console.log('   - Password hashed successfully');

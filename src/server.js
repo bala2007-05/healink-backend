@@ -27,8 +27,12 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = initializeSocketIO(server);
 
-// Middleware
-app.use(cors());
+// Middleware - CORS configured for Railway deployment
+app.use(cors({
+  origin: '*',
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -149,6 +153,16 @@ mqttClient.on('message', async (topic, message) => {
 // Start server function - ensures MongoDB is connected first
 const startServer = async () => {
   try {
+    // Railway deployment logging
+    console.log('\n' + '='.repeat(60));
+    console.log('🚀 Railway deployment active');
+    console.log('='.repeat(60));
+    console.log('Environment Variables Check:');
+    console.log(`   MongoDB URI: ${process.env.MONGO_URI ? '✅ Loaded' : '❌ Missing'}`);
+    console.log(`   JWT Secret: ${process.env.JWT_SECRET ? '✅ Loaded' : '❌ Missing'}`);
+    console.log(`   MQTT Broker: ${process.env.MQTT_BROKER ? '✅ Loaded' : '⚠️  Optional'}`);
+    console.log('='.repeat(60) + '\n');
+    
     // Connect to MongoDB FIRST and wait for connection
     console.log('🔄 Starting server initialization...');
     await connectDB();
@@ -160,16 +174,17 @@ const startServer = async () => {
     
     console.log('✅ MongoDB connection verified, starting HTTP server...');
     
-    // Start server
+    // Start server - Railway provides PORT via environment variable
     const PORT = process.env.PORT || 5000;
     
-    server.listen(PORT, () => {
+    server.listen(PORT, '0.0.0.0', () => {
       console.log('\n' + '='.repeat(60));
       console.log('🚀 HEALINK BACKEND SERVER STARTED');
       console.log('='.repeat(60));
       console.log(`📡 Server running on port ${PORT}`);
-      console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
-      console.log(`🔐 Auth test: http://localhost:${PORT}/api/auth/test`);
+      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🏥 Health check: /api/health`);
+      console.log(`🔐 Auth test: /api/auth/test`);
       console.log(`📊 MongoDB: Connected to ${mongoose.connection.name}`);
       console.log('='.repeat(60) + '\n');
     });
@@ -183,3 +198,6 @@ const startServer = async () => {
 
 // Start the server
 startServer();
+
+// Export server for Railway deployment
+export default server;
