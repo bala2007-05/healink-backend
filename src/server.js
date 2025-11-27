@@ -12,6 +12,7 @@ import { initializeSocketIO, getIO } from './config/socket.js';
 import Device from './models/Device.js';
 import Telemetry from './models/Telemetry.js';
 import Alert from './models/Alert.js';
+import { verifyEmailConfig } from './utils/emailService.js';
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';
@@ -30,11 +31,14 @@ const io = initializeSocketIO(server);
 // Middleware - CORS configured for Railway deployment
 app.use(cors({
   origin: '*',
-  methods: 'GET,POST,PUT,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
+  methods: 'GET,POST,PUT,PATCH,DELETE',
+  allowedHeaders: 'Content-Type,Authorization,ngrok-skip-browser-warning',
+  credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Increase JSON payload limit for base64 images
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -161,6 +165,8 @@ const startServer = async () => {
     console.log(`   MongoDB URI: ${process.env.MONGO_URI ? '✅ Loaded' : '❌ Missing'}`);
     console.log(`   JWT Secret: ${process.env.JWT_SECRET ? '✅ Loaded' : '❌ Missing'}`);
     console.log(`   MQTT Broker: ${process.env.MQTT_BROKER ? '✅ Loaded' : '⚠️  Optional'}`);
+    console.log(`   Email User: ${process.env.EMAIL_USER ? '✅ Loaded' : '❌ Missing'}`);
+    console.log(`   Email Password: ${process.env.EMAIL_PASSWORD ? '✅ Loaded' : '❌ Missing'}`);
     console.log('='.repeat(60) + '\n');
     
     // Connect to MongoDB FIRST and wait for connection
@@ -173,6 +179,16 @@ const startServer = async () => {
     }
     
     console.log('✅ MongoDB connection verified, starting HTTP server...');
+    
+    // Verify email configuration
+    const emailConfig = await verifyEmailConfig();
+    if (emailConfig.configured) {
+      console.log('✅ Email service: Ready');
+    } else {
+      console.warn('⚠️  Email service: Not configured');
+      console.warn(`   ${emailConfig.message}`);
+      console.warn('   OTP emails will not be sent until email is configured.');
+    }
     
     // Start server - Railway provides PORT via environment variable
     const PORT = process.env.PORT || 5000;
@@ -195,6 +211,25 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+// 404 handler - MUST be at the END, after all routes
+// This catches any requests that don't match the defined routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.path}`,
+    availableRoutes: [
+      'POST /api/auth/register-nurse',
+      'POST /api/auth/register-patient',
+      'POST /api/auth/login',
+      'POST /api/auth/forgot-password',
+      'POST /api/auth/verify-otp',
+      'POST /api/auth/reset-password',
+      'GET /api/auth/me',
+      'GET /api/health',
+    ],
+  });
+});
 
 // Start the server
 startServer();

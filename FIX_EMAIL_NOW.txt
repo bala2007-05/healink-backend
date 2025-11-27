@@ -1,0 +1,69 @@
+========================================
+URGENT: FIX EMAIL CONFIGURATION
+========================================
+
+Your .env file is missing EMAIL_USER and EMAIL_PASSWORD.
+
+CURRENT STATUS:
+- Email variables are COMMENTED OUT (have # in front)
+- You need to UNCOMMENT and ADD your values
+
+========================================
+STEP-BY-STEP FIX:
+========================================
+
+1. Open this file in a text editor:
+   C:\Users\Hp\Documents\F-Smartiv\backend\.env
+
+2. Scroll to the bottom, find these lines:
+   # EMAIL_USER=your-email@gmail.com
+   # EMAIL_PASSWORD=your-16-character-app-password
+
+3. REPLACE with (remove the # and add your real values):
+   EMAIL_USER=balachandhar2005@gmail.com
+   EMAIL_PASSWORD=your-actual-app-password-here
+
+4. Get Gmail App Password:
+   - Go to: https://myaccount.google.com/apppasswords
+   - Click "Select app" → Choose "Mail"
+   - Click "Select device" → Choose "Other (Custom name)"
+   - Enter name: "HEALINK Backend"
+   - Click "Generate"
+   - Copy the 16-character password (looks like: abcd efgh ijkl mnop)
+   - REMOVE ALL SPACES from the password
+
+5. Paste the password in .env file (replace "your-actual-app-password-here")
+
+6. Save the .env file
+
+7. Test email:
+   cd backend
+   node test-email.js balachandhar2005@gmail.com
+
+8. If test succeeds, restart backend:
+   npm start
+
+========================================
+EXAMPLE .env FILE (what it should look like):
+========================================
+
+PORT=5000
+MONGO_URI=mongodb+srv://balachandhar2005:Healink%40123@cluster0.il3llym.mongodb.net/healink_db?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=healinkSuperSecret123
+MQTT_BROKER=mqtt://broker.hivemq.com:1883
+
+EMAIL_USER=balachandhar2005@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+
+========================================
+IMPORTANT NOTES:
+========================================
+
+- NO spaces in EMAIL_PASSWORD
+- NO quotes around values
+- NO # symbol in front
+- Use App Password, NOT your regular Gmail password
+- Must enable 2-Step Verification first
+
+========================================
+

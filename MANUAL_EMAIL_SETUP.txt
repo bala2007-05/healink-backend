@@ -1,0 +1,58 @@
+========================================
+MANUAL EMAIL SETUP - DO THIS NOW
+========================================
+
+Your .env file has email variables commented out.
+You need to UNCOMMENT and FILL IN your actual values.
+
+STEP 1: Get Gmail App Password
+--------------------------------
+1. Go to: https://myaccount.google.com/apppasswords
+2. Select "Mail" and "Other (Custom name)"
+3. Name: "HEALINK Backend"
+4. Click "Generate"
+5. Copy the 16-character password (looks like: abcd efgh ijkl mnop)
+
+STEP 2: Edit backend/.env File
+--------------------------------
+Open: backend/.env
+
+Find these lines (they are commented with #):
+# EMAIL_USER=your-email@gmail.com
+# EMAIL_PASSWORD=your-16-character-app-password
+
+CHANGE TO (remove # and add your actual values):
+EMAIL_USER=balachandhar2005@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+
+IMPORTANT:
+- Remove the # at the start
+- Use your REAL Gmail address
+- Use the App Password (remove all spaces)
+- Don't add quotes
+- Save the file
+
+STEP 3: Test Email
+--------------------------------
+Run this command:
+cd backend
+node test-email.js balachandhar2005@gmail.com
+
+STEP 4: Restart Backend
+--------------------------------
+Stop current server (Ctrl+C) and restart:
+npm start
+
+========================================
+QUICK COPY-PASTE FOR .env FILE
+========================================
+
+Add these two lines at the end of backend/.env:
+
+EMAIL_USER=balachandhar2005@gmail.com
+EMAIL_PASSWORD=your-16-char-app-password-here
+
+Replace "your-16-char-app-password-here" with your actual App Password.
+
+========================================
+

@@ -38,6 +38,18 @@ const userSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    profileImage: {
+      type: String,
+      default: 'https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff',
+    },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

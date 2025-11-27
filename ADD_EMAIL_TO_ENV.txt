@@ -1,0 +1,39 @@
+==========================================
+QUICK FIX - ADD THESE LINES TO .env FILE
+==========================================
+
+1. Open: backend/.env
+
+2. Add these TWO lines at the end (uncomment and fill in):
+
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-16-character-app-password
+
+3. Example:
+EMAIL_USER=balachandhar2005@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+
+4. Save the file
+
+5. Restart backend: npm start
+
+==========================================
+HOW TO GET GMAIL APP PASSWORD:
+==========================================
+
+1. Go to: https://myaccount.google.com/apppasswords
+
+2. Select "Mail" and "Other (Custom name)"
+
+3. Name: "HEALINK Backend"
+
+4. Click "Generate"
+
+5. Copy the 16-character password
+
+6. Remove ALL spaces from the password
+
+7. Paste into .env file
+
+==========================================
+
